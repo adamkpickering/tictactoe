@@ -47,6 +47,7 @@ func (g *Game) PlayTurn(number int) error {
 
 func (g *Game) CheckWin() byte {
 
+	// test for win condition
 	wc := [8][3]int{
 		[3]int{0, 1, 2},
 		[3]int{3, 4, 5},
@@ -57,13 +58,24 @@ func (g *Game) CheckWin() byte {
 		[3]int{0, 4, 8},
 		[3]int{2, 4, 6},
 	}
-
 	for _, letter := range [2]byte{'X', 'O'} {
 		for _, c := range wc {
 			if g.board[c[0]] == letter && g.board[c[1]] == letter && g.board[c[2]] == letter {
 				return g.board[c[0]]
 			}
 		}
+	}
+
+	// test for draw condition
+	draw := true
+	for _, element := range g.board {
+		if element == 0 {
+			draw = false
+			break
+		}
+	}
+	if draw {
+		return 1
 	}
 
 	return 0

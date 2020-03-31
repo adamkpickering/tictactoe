@@ -47,8 +47,8 @@ func TestCheckWin(t *testing.T) {
 				board[condition[1]] = letter
 				board[condition[2]] = letter
 				g := game.NewGame(board)
-				winner := g.CheckWin()
-				if winner != letter {
+				result := g.CheckWin()
+				if result != letter {
 					t.Fail()
 				}
 			}
@@ -59,17 +59,28 @@ func TestCheckWin(t *testing.T) {
 	{
 		board := [9]byte{'X', 'O', 'X'}
 		g := game.NewGame(board)
-		winner := g.CheckWin()
-		if winner != 0 {
+		result := g.CheckWin()
+		if result != 0 {
 			t.Fail()
 		}
 	}
 	{
 		board := [9]byte{'O', 0, 0, 'X', 0, 0, 'O'}
 		g := game.NewGame(board)
-		winner := g.CheckWin()
-		if winner != 0 {
+		result := g.CheckWin()
+		if result != 0 {
 			t.Fail()
 		}
 	}
+
+	// test draw condition
+	{
+		board := [9]byte{'O', 'X', 'O', 'O', 'X', 'X', 'X', 'O', 'O'}
+		g := game.NewGame(board)
+		result := g.CheckWin()
+		if result != 1 {
+			t.Fail()
+		}
+	}
+
 }
