@@ -6,21 +6,21 @@ import (
 )
 
 type Game struct {
-	board [9]byte
-	turn  byte
+	Board [9]byte
+	Turn  byte
 }
 
 func NewGame(i interface{}) *Game {
 	switch v := i.(type) {
 	case [9]byte:
 		return &Game{
-			board: v,
-			turn:  'X',
+			Board: v,
+			Turn:  'X',
 		}
 	default:
 		return &Game{
-			board: [9]byte{},
-			turn:  'X',
+			Board: [9]byte{},
+			Turn:  'X',
 		}
 	}
 }
@@ -31,15 +31,15 @@ func (g *Game) PlayTurn(number int) error {
 		return errors.New(fmt.Sprintf("%d is not a valid number; choose a number from 0 to 8", number))
 	}
 
-	if g.board[number] != 0 {
+	if g.Board[number] != 0 {
 		return errors.New(fmt.Sprintf("square %d is already occupied", number))
 	}
 
-	g.board[number] = g.turn
-	if g.turn == 'X' {
-		g.turn = 'O'
+	g.Board[number] = g.Turn
+	if g.Turn == 'X' {
+		g.Turn = 'O'
 	} else {
-		g.turn = 'X'
+		g.Turn = 'X'
 	}
 
 	return nil
@@ -60,15 +60,15 @@ func (g *Game) CheckWin() byte {
 	}
 	for _, letter := range [2]byte{'X', 'O'} {
 		for _, c := range wc {
-			if g.board[c[0]] == letter && g.board[c[1]] == letter && g.board[c[2]] == letter {
-				return g.board[c[0]]
+			if g.Board[c[0]] == letter && g.Board[c[1]] == letter && g.Board[c[2]] == letter {
+				return g.Board[c[0]]
 			}
 		}
 	}
 
 	// test for draw condition
 	draw := true
-	for _, element := range g.board {
+	for _, element := range g.Board {
 		if element == 0 {
 			draw = false
 			break
