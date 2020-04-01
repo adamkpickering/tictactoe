@@ -31,24 +31,35 @@ func main() {
 		switch result {
 		case 'X':
 			fmt.Printf("Player %c won. Good Game!\n", result)
+			printGame(g.Board)
 			os.Exit(0)
 		case 'O':
 			fmt.Printf("Player %c won. Good Game!\n", result)
+			printGame(g.Board)
 			os.Exit(0)
 		case 1:
 			fmt.Print("It is a draw. Good game!\n")
+			printGame(g.Board)
 			os.Exit(0)
 		}
 	}
 }
 
-func printGame(board [9]byte) {
+func printGame(b [9]byte) {
+	pb := [9]byte{}
+	for i, element := range b {
+		if element == 0 {
+			pb[i] = ' '
+		} else {
+			pb[i] = element
+		}
+	}
 	fmt.Printf("\tBoard:\t\t\tLegend:\n")
 	fmt.Printf("\t-------------------\t-------------------\n")
-	fmt.Printf("\t|  %c  |  %c  |  %c  |\t|  0  |  1  |  2  |\n", board[0], board[1], board[2])
+	fmt.Printf("\t|  %c  |  %c  |  %c  |\t|  0  |  1  |  2  |\n", pb[0], pb[1], pb[2])
 	fmt.Printf("\t-------------------\t-------------------\n")
-	fmt.Printf("\t|  %c  |  %c  |  %c  |\t|  3  |  4  |  5  |\n", board[3], board[4], board[5])
+	fmt.Printf("\t|  %c  |  %c  |  %c  |\t|  3  |  4  |  5  |\n", pb[3], pb[4], pb[5])
 	fmt.Printf("\t-------------------\t-------------------\n")
-	fmt.Printf("\t|  %c  |  %c  |  %c  |\t|  6  |  7  |  8  |\n", board[6], board[7], board[8])
+	fmt.Printf("\t|  %c  |  %c  |  %c  |\t|  6  |  7  |  8  |\n", pb[6], pb[7], pb[8])
 	fmt.Printf("\t-------------------\t-------------------\n")
 }
