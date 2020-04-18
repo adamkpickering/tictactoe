@@ -3,50 +3,102 @@ package main
 import (
 	"fmt"
 	//"os"
-	"github.com/awesome-gocui/gocui"
-	//"adampickering.ca/tictactoe/pkg/game"
+	//"time"
+	"github.com/gdamore/tcell"
+	"github.com/gdamore/tcell/views"
 )
-
-func quit(_ *gocui.Gui, _ *gocui.View) error {
-	return gocui.ErrQuit
-}
 
 func main() {
 
-	g, err := gocui.NewGui(gocui.OutputGrayScale, false)
-	if err != nil {
-		fmt.Printf("NewGui failed: %s\n", err.Error())
-		return
-	}
-	defer g.Close()
+//	// set tcell up
+//	s, err := tcell.NewScreen()
+//	if err != nil {
+//		fmt.Printf("main: %s", err.Error())
+//		os.Exit(1)
+//	}
+//	err = s.Init()
+//	if err != nil {
+//		fmt.Printf("main: %s", err.Error())
+//		os.Exit(1)
+//	}
+//	s.Clear()
 
-	x, y := g.Size()
-	fmt.Printf("size of window is %d, %d", x, y)
+	a := &views.Application{}
+	w := NewTicTacToeWidget(a)
+	a.SetRootWidget(w)
+	a.Start()
+	a.Wait()
 
-	test_view, err := g.SetView("test", 0, 0, 10, 10, 0)
-	if gocui.IsUnknownView(err) {
-		fmt.Fprintf(test_view, "hello world")
-	} else if err != nil {
-		fmt.Printf("SetView failed: %s\n", err.Error())
-		return
-	}
 
-	_, err = g.SetCurrentView("test")
-	if err != nil {
-		fmt.Printf("SetCurrentView failed: %s\n", err.Error())
-		return
-	}
+//	width, height := s.Size()
+//	wh := fmt.Sprintf("%d\u2318%d", width, height)
+//
+//	i := 0
+//	for _, r := range wh {
+//		s.SetContent(i, 0, r, nil, tcell.StyleDefault)
+//		i = i + 1
+//	}
+//	s.Show()
+//
+//	time.Sleep(time.Second * 4)
+//
+//	s.Fini()
+}
 
-	err = g.SetKeybinding("test", gocui.KeyEnter, gocui.ModNone, quit)
-	if err != nil {
-		fmt.Printf("SetKeybinding failed: %s\n", err.Error())
-		return
-	}
 
-	if err := g.MainLoop(); err != nil && !gocui.IsQuit(err) {
-		fmt.Printf("g.MainLoop failed: %s\n", err.Error())
-		return
+type TicTacToeWidget struct {
+	application *views.Application
+}
+
+func NewTicTacToeWidget(a *views.Application) *TicTacToeWidget {
+	return &TicTacToeWidget{
+		application: a,
 	}
+}
+
+func (t *TicTacToeWidget) Draw() {
+	fmt.Println("Draw: not implemented\n")
+}
+
+
+func (t *TicTacToeWidget) Resize() {
+	fmt.Println("Resize: not implemented\n")
+}
+
+func (t *TicTacToeWidget) HandleEvent(i tcell.Event) bool {
+	fmt.Println("HandleEvent: implemented\n")
+	switch e := i.(type) {
+	case *tcell.EventKey:
+		if e.Key() == tcell.KeyRune {
+			fmt.Printf("%s\n", e.Rune())
+		}
+		if e.Key() == tcell.KeyEnter {
+			t.application.Quit()
+		}
+		return true
+	default:
+		return false
+	}
+}
+
+func (t *TicTacToeWidget) SetView(v views.View) {
+	fmt.Println("SetView: not implemented\n")
+}
+
+func (t *TicTacToeWidget) Size() (int, int) {
+	fmt.Println("Size: not implemented\n")
+	return 0, 0
+}
+
+func (t *TicTacToeWidget) Watch(handler tcell.EventHandler) {
+	fmt.Println("Watch: not implemented\n")
+}
+
+func (t *TicTacToeWidget) Unwatch(handler tcell.EventHandler) {
+	fmt.Println("Unwatch: not implemented\n")
+}
+
+
 
 //	g := game.NewGame(nil)
 //
@@ -83,7 +135,6 @@ func main() {
 //			os.Exit(0)
 //		}
 //	}
-}
 
 //func printGame(b [9]byte) {
 //	pb := [9]byte{}
