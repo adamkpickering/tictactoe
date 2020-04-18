@@ -2,102 +2,135 @@ package main
 
 import (
 	"fmt"
-	//"os"
-	//"time"
+	"os"
+	"time"
 	"github.com/gdamore/tcell"
-	"github.com/gdamore/tcell/views"
 )
 
 func main() {
 
-//	// set tcell up
-//	s, err := tcell.NewScreen()
-//	if err != nil {
-//		fmt.Printf("main: %s", err.Error())
-//		os.Exit(1)
-//	}
-//	err = s.Init()
-//	if err != nil {
-//		fmt.Printf("main: %s", err.Error())
-//		os.Exit(1)
-//	}
-//	s.Clear()
-
-	a := &views.Application{}
-	w := NewTicTacToeWidget(a)
-	a.SetRootWidget(w)
-	a.Start()
-	a.Wait()
-
-
-//	width, height := s.Size()
-//	wh := fmt.Sprintf("%d\u2318%d", width, height)
-//
-//	i := 0
-//	for _, r := range wh {
-//		s.SetContent(i, 0, r, nil, tcell.StyleDefault)
-//		i = i + 1
-//	}
-//	s.Show()
-//
-//	time.Sleep(time.Second * 4)
-//
-//	s.Fini()
-}
-
-
-type TicTacToeWidget struct {
-	application *views.Application
-}
-
-func NewTicTacToeWidget(a *views.Application) *TicTacToeWidget {
-	return &TicTacToeWidget{
-		application: a,
+	s, err := tcell.NewScreen()
+	if err != nil {
+		fmt.Printf("main: %s", err.Error())
+		os.Exit(1)
 	}
-}
-
-func (t *TicTacToeWidget) Draw() {
-	fmt.Println("Draw: not implemented\n")
-}
-
-
-func (t *TicTacToeWidget) Resize() {
-	fmt.Println("Resize: not implemented\n")
-}
-
-func (t *TicTacToeWidget) HandleEvent(i tcell.Event) bool {
-	fmt.Println("HandleEvent: implemented\n")
-	switch e := i.(type) {
-	case *tcell.EventKey:
-		if e.Key() == tcell.KeyRune {
-			fmt.Printf("%s\n", e.Rune())
-		}
-		if e.Key() == tcell.KeyEnter {
-			t.application.Quit()
-		}
-		return true
-	default:
-		return false
+	err = s.Init()
+	if err != nil {
+		fmt.Printf("main: %s", err.Error())
+		os.Exit(1)
 	}
+	s.Clear()
+
+	draw_screen(s)
+
+	s.Show()
+
+	time.Sleep(time.Second * 2)
+
+	s.Fini()
 }
 
-func (t *TicTacToeWidget) SetView(v views.View) {
-	fmt.Println("SetView: not implemented\n")
-}
 
-func (t *TicTacToeWidget) Size() (int, int) {
-	fmt.Println("Size: not implemented\n")
-	return 0, 0
-}
+func draw_screen(screen tcell.Screen) {
 
-func (t *TicTacToeWidget) Watch(handler tcell.EventHandler) {
-	fmt.Println("Watch: not implemented\n")
-}
+	screen.SetContent(0, 0, tcell.RuneULCorner, nil, tcell.StyleDefault)
+	screen.SetContent(1, 0, tcell.RuneHLine, nil, tcell.StyleDefault)
+	screen.SetContent(2, 0, tcell.RuneHLine, nil, tcell.StyleDefault)
+	screen.SetContent(3, 0, tcell.RuneHLine, nil, tcell.StyleDefault)
+	screen.SetContent(4, 0, tcell.RuneTTee, nil, tcell.StyleDefault)
+	screen.SetContent(5, 0, tcell.RuneHLine, nil, tcell.StyleDefault)
+	screen.SetContent(6, 0, tcell.RuneHLine, nil, tcell.StyleDefault)
+	screen.SetContent(7, 0, tcell.RuneHLine, nil, tcell.StyleDefault)
+	screen.SetContent(8, 0, tcell.RuneTTee, nil, tcell.StyleDefault)
+	screen.SetContent(9, 0, tcell.RuneHLine, nil, tcell.StyleDefault)
+	screen.SetContent(10, 0, tcell.RuneHLine, nil, tcell.StyleDefault)
+	screen.SetContent(11, 0, tcell.RuneHLine, nil, tcell.StyleDefault)
+	screen.SetContent(12, 0, tcell.RuneURCorner, nil, tcell.StyleDefault)
 
-func (t *TicTacToeWidget) Unwatch(handler tcell.EventHandler) {
-	fmt.Println("Unwatch: not implemented\n")
-}
+	screen.SetContent(0, 1, tcell.RuneVLine, nil, tcell.StyleDefault)
+	screen.SetContent(1, 1, ' ', nil, tcell.StyleDefault)
+	screen.SetContent(2, 1, ' ', nil, tcell.StyleDefault)
+	screen.SetContent(3, 1, ' ', nil, tcell.StyleDefault)
+	screen.SetContent(4, 1, tcell.RuneVLine, nil, tcell.StyleDefault)
+	screen.SetContent(5, 1, ' ', nil, tcell.StyleDefault)
+	screen.SetContent(6, 1, ' ', nil, tcell.StyleDefault)
+	screen.SetContent(7, 1, ' ', nil, tcell.StyleDefault)
+	screen.SetContent(8, 1, tcell.RuneVLine, nil, tcell.StyleDefault)
+	screen.SetContent(9, 1, ' ', nil, tcell.StyleDefault)
+	screen.SetContent(10, 1, ' ', nil, tcell.StyleDefault)
+	screen.SetContent(11, 1, ' ', nil, tcell.StyleDefault)
+	screen.SetContent(12, 1, tcell.RuneVLine, nil, tcell.StyleDefault)
 
+	screen.SetContent(0, 2, tcell.RuneLTee, nil, tcell.StyleDefault)
+	screen.SetContent(1, 2, tcell.RuneHLine, nil, tcell.StyleDefault)
+	screen.SetContent(2, 2, tcell.RuneHLine, nil, tcell.StyleDefault)
+	screen.SetContent(3, 2, tcell.RuneHLine, nil, tcell.StyleDefault)
+	screen.SetContent(4, 2, tcell.RunePlus, nil, tcell.StyleDefault)
+	screen.SetContent(5, 2, tcell.RuneHLine, nil, tcell.StyleDefault)
+	screen.SetContent(6, 2, tcell.RuneHLine, nil, tcell.StyleDefault)
+	screen.SetContent(7, 2, tcell.RuneHLine, nil, tcell.StyleDefault)
+	screen.SetContent(8, 2, tcell.RunePlus, nil, tcell.StyleDefault)
+	screen.SetContent(9, 2, tcell.RuneHLine, nil, tcell.StyleDefault)
+	screen.SetContent(10, 2, tcell.RuneHLine, nil, tcell.StyleDefault)
+	screen.SetContent(11, 2, tcell.RuneHLine, nil, tcell.StyleDefault)
+	screen.SetContent(12, 2, tcell.RuneRTee, nil, tcell.StyleDefault)
+
+	screen.SetContent(0, 3, tcell.RuneVLine, nil, tcell.StyleDefault)
+	screen.SetContent(1, 3, ' ', nil, tcell.StyleDefault)
+	screen.SetContent(2, 3, ' ', nil, tcell.StyleDefault)
+	screen.SetContent(3, 3, ' ', nil, tcell.StyleDefault)
+	screen.SetContent(4, 3, tcell.RuneVLine, nil, tcell.StyleDefault)
+	screen.SetContent(5, 3, ' ', nil, tcell.StyleDefault)
+	screen.SetContent(6, 3, ' ', nil, tcell.StyleDefault)
+	screen.SetContent(7, 3, ' ', nil, tcell.StyleDefault)
+	screen.SetContent(8, 3, tcell.RuneVLine, nil, tcell.StyleDefault)
+	screen.SetContent(9, 3, ' ', nil, tcell.StyleDefault)
+	screen.SetContent(10, 3, ' ', nil, tcell.StyleDefault)
+	screen.SetContent(11, 3, ' ', nil, tcell.StyleDefault)
+	screen.SetContent(12, 3, tcell.RuneVLine, nil, tcell.StyleDefault)
+
+	screen.SetContent(0, 4, tcell.RuneLTee, nil, tcell.StyleDefault)
+	screen.SetContent(1, 4, tcell.RuneHLine, nil, tcell.StyleDefault)
+	screen.SetContent(2, 4, tcell.RuneHLine, nil, tcell.StyleDefault)
+	screen.SetContent(3, 4, tcell.RuneHLine, nil, tcell.StyleDefault)
+	screen.SetContent(4, 4, tcell.RunePlus, nil, tcell.StyleDefault)
+	screen.SetContent(5, 4, tcell.RuneHLine, nil, tcell.StyleDefault)
+	screen.SetContent(6, 4, tcell.RuneHLine, nil, tcell.StyleDefault)
+	screen.SetContent(7, 4, tcell.RuneHLine, nil, tcell.StyleDefault)
+	screen.SetContent(8, 4, tcell.RunePlus, nil, tcell.StyleDefault)
+	screen.SetContent(9, 4, tcell.RuneHLine, nil, tcell.StyleDefault)
+	screen.SetContent(10, 4, tcell.RuneHLine, nil, tcell.StyleDefault)
+	screen.SetContent(11, 4, tcell.RuneHLine, nil, tcell.StyleDefault)
+	screen.SetContent(12, 4, tcell.RuneRTee, nil, tcell.StyleDefault)
+
+	screen.SetContent(0, 5, tcell.RuneVLine, nil, tcell.StyleDefault)
+	screen.SetContent(1, 5, ' ', nil, tcell.StyleDefault)
+	screen.SetContent(2, 5, ' ', nil, tcell.StyleDefault)
+	screen.SetContent(3, 5, ' ', nil, tcell.StyleDefault)
+	screen.SetContent(4, 5, tcell.RuneVLine, nil, tcell.StyleDefault)
+	screen.SetContent(5, 5, ' ', nil, tcell.StyleDefault)
+	screen.SetContent(6, 5, ' ', nil, tcell.StyleDefault)
+	screen.SetContent(7, 5, ' ', nil, tcell.StyleDefault)
+	screen.SetContent(8, 5, tcell.RuneVLine, nil, tcell.StyleDefault)
+	screen.SetContent(9, 5, ' ', nil, tcell.StyleDefault)
+	screen.SetContent(10, 5, ' ', nil, tcell.StyleDefault)
+	screen.SetContent(11, 5, ' ', nil, tcell.StyleDefault)
+	screen.SetContent(12, 5, tcell.RuneVLine, nil, tcell.StyleDefault)
+
+	screen.SetContent(0, 6, tcell.RuneLLCorner, nil, tcell.StyleDefault)
+	screen.SetContent(1, 6, tcell.RuneHLine, nil, tcell.StyleDefault)
+	screen.SetContent(2, 6, tcell.RuneHLine, nil, tcell.StyleDefault)
+	screen.SetContent(3, 6, tcell.RuneHLine, nil, tcell.StyleDefault)
+	screen.SetContent(4, 6, tcell.RuneBTee, nil, tcell.StyleDefault)
+	screen.SetContent(5, 6, tcell.RuneHLine, nil, tcell.StyleDefault)
+	screen.SetContent(6, 6, tcell.RuneHLine, nil, tcell.StyleDefault)
+	screen.SetContent(7, 6, tcell.RuneHLine, nil, tcell.StyleDefault)
+	screen.SetContent(8, 6, tcell.RuneBTee, nil, tcell.StyleDefault)
+	screen.SetContent(9, 6, tcell.RuneHLine, nil, tcell.StyleDefault)
+	screen.SetContent(10, 6, tcell.RuneHLine, nil, tcell.StyleDefault)
+	screen.SetContent(11, 6, tcell.RuneHLine, nil, tcell.StyleDefault)
+	screen.SetContent(12, 6, tcell.RuneLRCorner, nil, tcell.StyleDefault)
+}
 
 
 //	g := game.NewGame(nil)
