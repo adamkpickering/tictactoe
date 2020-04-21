@@ -2,145 +2,48 @@ package view
 
 import (
 	"fmt"
-	"os"
 	"errors"
 	"github.com/gdamore/tcell"
 )
 
 
 type View struct {
-	SelectedSquare int
+	SelectedRow, SelectedCol int
 	screen tcell.Screen
 }
 
 func NewView(s tcell.Screen) *View {
 	return &View{
 		screen: s,
-		SelectedSquare: 0,
+		SelectedRow: 0,
+		SelectedCol: 0,
 	}
 }
 
 func (v *View) MoveSelect(key tcell.Key) error {
-	switch v.SelectedSquare {
-	case 0:
-		switch key {
-		case tcell.KeyUp:
-			v.SelectedSquare = 6
-		case tcell.KeyRight:
-			v.SelectedSquare = 1
-		case tcell.KeyDown:
-			v.SelectedSquare = 3
-		case tcell.KeyLeft:
-			v.SelectedSquare = 2
-		default:
-			return fmt.Errorf("%s is not a valid key")
+	switch key {
+	case tcell.KeyUp:
+		v.SelectedRow = v.SelectedRow - 1
+		if v.SelectedRow < 0 {
+			v.SelectedRow = 2
 		}
-	case 1:
-		switch key {
-		case tcell.KeyUp:
-			v.SelectedSquare = 7
-		case tcell.KeyRight:
-			v.SelectedSquare = 2
-		case tcell.KeyDown:
-			v.SelectedSquare = 4
-		case tcell.KeyLeft:
-			v.SelectedSquare = 0
-		default:
-			return fmt.Errorf("%s is not a valid key")
+	case tcell.KeyRight:
+		v.SelectedCol = v.SelectedCol + 1
+		if v.SelectedCol > 2 {
+			v.SelectedCol = 0
 		}
-	case 2:
-		switch key {
-		case tcell.KeyUp:
-			v.SelectedSquare = 8
-		case tcell.KeyRight:
-			v.SelectedSquare = 0
-		case tcell.KeyDown:
-			v.SelectedSquare = 5
-		case tcell.KeyLeft:
-			v.SelectedSquare = 1
-		default:
-			return fmt.Errorf("%s is not a valid key")
+	case tcell.KeyDown:
+		v.SelectedRow = v.SelectedRow + 1
+		if v.SelectedRow > 2 {
+			v.SelectedRow = 0
 		}
-	case 3:
-		switch key {
-		case tcell.KeyUp:
-			v.SelectedSquare = 0
-		case tcell.KeyRight:
-			v.SelectedSquare = 4
-		case tcell.KeyDown:
-			v.SelectedSquare = 6
-		case tcell.KeyLeft:
-			v.SelectedSquare = 5
-		default:
-			return fmt.Errorf("%s is not a valid key")
-		}
-	case 4:
-		switch key {
-		case tcell.KeyUp:
-			v.SelectedSquare = 1
-		case tcell.KeyRight:
-			v.SelectedSquare = 5
-		case tcell.KeyDown:
-			v.SelectedSquare = 7
-		case tcell.KeyLeft:
-			v.SelectedSquare = 3
-		default:
-			return fmt.Errorf("%s is not a valid key")
-		}
-	case 5:
-		switch key {
-		case tcell.KeyUp:
-			v.SelectedSquare = 2
-		case tcell.KeyRight:
-			v.SelectedSquare = 3
-		case tcell.KeyDown:
-			v.SelectedSquare = 8
-		case tcell.KeyLeft:
-			v.SelectedSquare = 4
-		default:
-			return fmt.Errorf("%s is not a valid key")
-		}
-	case 6:
-		switch key {
-		case tcell.KeyUp:
-			v.SelectedSquare = 3
-		case tcell.KeyRight:
-			v.SelectedSquare = 7
-		case tcell.KeyDown:
-			v.SelectedSquare = 0
-		case tcell.KeyLeft:
-			v.SelectedSquare = 8
-		default:
-			return fmt.Errorf("%s is not a valid key")
-		}
-	case 7:
-		switch key {
-		case tcell.KeyUp:
-			v.SelectedSquare = 4
-		case tcell.KeyRight:
-			v.SelectedSquare = 8
-		case tcell.KeyDown:
-			v.SelectedSquare = 1
-		case tcell.KeyLeft:
-			v.SelectedSquare = 6
-		default:
-			return fmt.Errorf("%s is not a valid key")
-		}
-	case 8:
-		switch key {
-		case tcell.KeyUp:
-			v.SelectedSquare = 5
-		case tcell.KeyRight:
-			v.SelectedSquare = 6
-		case tcell.KeyDown:
-			v.SelectedSquare = 2
-		case tcell.KeyLeft:
-			v.SelectedSquare = 7
-		default:
-			return fmt.Errorf("%s is not a valid key")
+	case tcell.KeyLeft:
+		v.SelectedCol = v.SelectedCol - 1
+		if v.SelectedCol < 0 {
+			v.SelectedCol = 2
 		}
 	default:
-		return errors.New("SelectedSquare out of range")
+		return fmt.Errorf("%v is not a valid key", key)
 	}
 	return nil
 }
