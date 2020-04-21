@@ -8,17 +8,17 @@ func TestPlayTurn(t *testing.T) {
 
 	g := NewGame(nil)
 
-	err := g.PlayTurn(9)
+	err := g.PlayTurn(0, 3)
 	if err == nil {
 		t.Fail()
 	}
 
-	err = g.PlayTurn(-1)
+	err = g.PlayTurn(-1, 2)
 	if err == nil {
 		t.Fail()
 	}
 
-	err = g.PlayTurn(1)
+	err = g.PlayTurn(0, 1)
 	if err != nil {
 		t.Fail()
 	}
@@ -28,23 +28,55 @@ func TestCheckWin(t *testing.T) {
 
 	// test all win conditions
 	{
-		win_conditions := [8][3]int{
-			[3]int{0, 1, 2},
-			[3]int{3, 4, 5},
-			[3]int{6, 7, 8},
-			[3]int{0, 3, 6},
-			[3]int{1, 4, 7},
-			[3]int{2, 5, 8},
-			[3]int{0, 4, 8},
-			[3]int{2, 4, 6},
+		wc_array := [8][3][2]int{
+			[3][2]int{
+				[2]int{0, 0},
+				[2]int{0, 1},
+				[2]int{0, 2},
+			},
+			[3][2]int{
+				[2]int{1, 0},
+				[2]int{1, 1},
+				[2]int{1, 2},
+			},
+			[3][2]int{
+				[2]int{2, 0},
+				[2]int{2, 1},
+				[2]int{2, 2},
+			},
+			[3][2]int{
+				[2]int{0, 0},
+				[2]int{1, 0},
+				[2]int{2, 0},
+			},
+			[3][2]int{
+				[2]int{0, 1},
+				[2]int{1, 1},
+				[2]int{2, 1},
+			},
+			[3][2]int{
+				[2]int{0, 2},
+				[2]int{1, 2},
+				[2]int{2, 2},
+			},
+			[3][2]int{
+				[2]int{0, 0},
+				[2]int{1, 1},
+				[2]int{2, 2},
+			},
+			[3][2]int{
+				[2]int{0, 2},
+				[2]int{1, 1},
+				[2]int{2, 0},
+			},
 		}
-		board := [9]byte{}
+		board := [3][3]byte{}
 		for _, letter := range [2]byte{'X', 'O'} {
-			for _, condition := range win_conditions {
-				board = [9]byte{}
-				board[condition[0]] = letter
-				board[condition[1]] = letter
-				board[condition[2]] = letter
+			for _, wc := range wc_array {
+				board = [3][3]byte{}
+				board[wc[0][0]][wc[0][1]] = letter
+				board[wc[1][0]][wc[1][1]] = letter
+				board[wc[2][0]][wc[2][1]] = letter
 				g := NewGame(board)
 				result := g.CheckWin()
 				if result != letter {
@@ -56,7 +88,11 @@ func TestCheckWin(t *testing.T) {
 
 	// test some other conditions
 	{
-		board := [9]byte{'X', 'O', 'X'}
+		board := [3][3]byte{
+			[3]byte{'X', 'X', 'O'},
+			[3]byte{0, 0, 0},
+			[3]byte{0, 0, 0},
+		}
 		g := NewGame(board)
 		result := g.CheckWin()
 		if result != 0 {
@@ -64,7 +100,11 @@ func TestCheckWin(t *testing.T) {
 		}
 	}
 	{
-		board := [9]byte{'O', 0, 0, 'X', 0, 0, 'O'}
+		board := [3][3]byte{
+			[3]byte{'O', 0, 0},
+			[3]byte{'X', 0, 0},
+			[3]byte{'O', 0, 0},
+		}
 		g := NewGame(board)
 		result := g.CheckWin()
 		if result != 0 {
@@ -74,7 +114,11 @@ func TestCheckWin(t *testing.T) {
 
 	// test draw condition
 	{
-		board := [9]byte{'O', 'X', 'O', 'O', 'X', 'X', 'X', 'O', 'O'}
+		board := [3][3]byte{
+			[3]byte{'X', 'X', 'O'},
+			[3]byte{'O', 'O', 'X'},
+			[3]byte{'X', 'O', 'X'},
+		}
 		g := NewGame(board)
 		result := g.CheckWin()
 		if result != 1 {

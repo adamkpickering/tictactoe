@@ -1,41 +1,41 @@
 package game
 
 import (
-	"errors"
 	"fmt"
 )
 
 type Game struct {
-	Board [9]byte
+	Board [3][3]byte
 	Turn  byte
 }
 
 func NewGame(i interface{}) *Game {
 	switch v := i.(type) {
-	case [9]byte:
+	case [3][3]byte:
 		return &Game{
 			Board: v,
 			Turn:  'X',
 		}
 	default:
 		return &Game{
-			Board: [9]byte{},
+			Board: [3][3]byte{},
 			Turn:  'X',
 		}
 	}
 }
 
-func (g *Game) PlayTurn(number int) error {
+func (g *Game) PlayTurn(row, col int) error {
 
-	if number < 0 || number > 8 {
-		return errors.New(fmt.Sprintf("%d is not a valid number; choose a number from 0 to 8", number))
+	if row < 0 || row > 2 || col < 0 || col > 2 {
+		return fmt.Errorf("row %d col %d is not valid; must be in range 0-2", row, col)
 	}
 
-	if g.Board[number] != 0 {
-		return errors.New(fmt.Sprintf("square %d is already occupied", number))
+	if g.Board[row][col] != 0 {
+		return fmt.Errorf("square %d,%d is already occupied", row, col)
 	}
 
-	g.Board[number] = g.Turn
+	g.Board[row][col] = g.Turn
+
 	if g.Turn == 'X' {
 		g.Turn = 'O'
 	} else {
@@ -48,30 +48,71 @@ func (g *Game) PlayTurn(number int) error {
 func (g *Game) CheckWin() byte {
 
 	// test for win condition
-	wc := [8][3]int{
-		[3]int{0, 1, 2},
-		[3]int{3, 4, 5},
-		[3]int{6, 7, 8},
-		[3]int{0, 3, 6},
-		[3]int{1, 4, 7},
-		[3]int{2, 5, 8},
-		[3]int{0, 4, 8},
-		[3]int{2, 4, 6},
+	wc_array := [8][3][2]int{
+		[3][2]int{
+			[2]int{0, 0},
+			[2]int{0, 1},
+			[2]int{0, 2},
+		},
+		[3][2]int{
+			[2]int{1, 0},
+			[2]int{1, 1},
+			[2]int{1, 2},
+		},
+		[3][2]int{
+			[2]int{2, 0},
+			[2]int{2, 1},
+			[2]int{2, 2},
+		},
+		[3][2]int{
+			[2]int{0, 0},
+			[2]int{1, 0},
+			[2]int{2, 0},
+		},
+		[3][2]int{
+			[2]int{0, 1},
+			[2]int{1, 1},
+			[2]int{2, 1},
+		},
+		[3][2]int{
+			[2]int{0, 2},
+			[2]int{1, 2},
+			[2]int{2, 2},
+		},
+		[3][2]int{
+			[2]int{0, 0},
+			[2]int{1, 1},
+			[2]int{2, 2},
+		},
+		[3][2]int{
+			[2]int{0, 2},
+			[2]int{1, 1},
+			[2]int{2, 0},
+		},
 	}
+	win := true
 	for _, letter := range [2]byte{'X', 'O'} {
-		for _, c := range wc {
-			if g.Board[c[0]] == letter && g.Board[c[1]] == letter && g.Board[c[2]] == letter {
-				return g.Board[c[0]]
+		for _, wc := range wc_array {
+			win = true
+			for _, coords := range wc {
+				if g.Board[coords[0]][coords[1]] != letter {
+					win = false
+				}
+			}
+			if win {
+				return g.Board[wc[0][0]][wc[0][1]]
 			}
 		}
 	}
 
 	// test for draw condition
 	draw := true
-	for _, element := range g.Board {
-		if element == 0 {
-			draw = false
-			break
+	for _, row := range g.Board {
+		for _, square := range row{
+			if square == 0 {
+				draw = false
+				break
+			}
 		}
 	}
 	if draw {
