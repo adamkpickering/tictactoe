@@ -2,8 +2,8 @@ package view
 
 import (
 	"fmt"
-	"errors"
 	"github.com/gdamore/tcell"
+	"github.com/adamkpickering/tictactoe/pkg/game"
 )
 
 
@@ -49,56 +49,30 @@ func (v *View) MoveSelect(key tcell.Key) error {
 }
 
 
-func (v *View) Draw() {
+func (v *View) Draw(game *game.Game) {
 
+	// put X's and O's into board
 	board := v.getFreshBoard()
-
-	select_style := tcell.StyleDefault.Background(tcell.ColorWhite)
-	switch v.SelectedSquare {
-	case 0:
-		board[1][1].Style = select_style
-		board[1][2].Style = select_style
-		board[1][3].Style = select_style
-	case 1:
-		board[1][5].Style = select_style
-		board[1][6].Style = select_style
-		board[1][7].Style = select_style
-	case 2:
-		board[1][9].Style = select_style
-		board[1][10].Style = select_style
-		board[1][11].Style = select_style
-	case 3:
-		board[3][1].Style = select_style
-		board[3][2].Style = select_style
-		board[3][3].Style = select_style
-	case 4:
-		board[3][5].Style = select_style
-		board[3][6].Style = select_style
-		board[3][7].Style = select_style
-	case 5:
-		board[3][9].Style = select_style
-		board[3][10].Style = select_style
-		board[3][11].Style = select_style
-	case 6:
-		board[5][1].Style = select_style
-		board[5][2].Style = select_style
-		board[5][3].Style = select_style
-	case 7:
-		board[5][5].Style = select_style
-		board[5][6].Style = select_style
-		board[5][7].Style = select_style
-	case 8:
-		board[5][9].Style = select_style
-		board[5][10].Style = select_style
-		board[5][11].Style = select_style
+	for i, row := range game.Board {
+		for j, val := range row {
+			if val != 0 {
+				board[ i*2 + 1 ][ j*4 + 2].Rune = rune(val)
+			}
+		}
 	}
 
+	// color the selected cell white
+	select_style := tcell.StyleDefault.Background(tcell.ColorWhite)
+	board[ v.SelectedRow*2 + 1 ][ v.SelectedCol*4 + 1].Style = select_style
+	board[ v.SelectedRow*2 + 1 ][ v.SelectedCol*4 + 2].Style = select_style
+	board[ v.SelectedRow*2 + 1 ][ v.SelectedCol*4 + 3].Style = select_style
+
+	// write data to the screen
 	for j, row := range board {
 		for i, cell := range row {
 			v.screen.SetContent(i, j, cell.Rune, nil, cell.Style)
 		}
 	}
-
 	v.screen.Show()
 
 }
