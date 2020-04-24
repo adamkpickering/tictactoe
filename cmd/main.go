@@ -3,12 +3,15 @@ package main
 import (
 	"fmt"
 	"os"
-	"errors"
 	"github.com/gdamore/tcell"
+
+	"github.com/adamkpickering/tictactoe/pkg/game"
+	"github.com/adamkpickering/tictactoe/pkg/view"
 )
 
 func main() {
 
+	// set up tcell screen
 	s, err := tcell.NewScreen()
 	if err != nil {
 		fmt.Printf("main: %s", err.Error())
@@ -21,12 +24,25 @@ func main() {
 	}
 	s.Clear()
 
-	// create game object
+	// create game and view object
 	g := game.NewGame(nil)
+	view := view.NewView(s)
 
-	view := NewView(s)
 	for {
-		view.Draw()
+		// check for win conditions
+		result := g.CheckWin()
+		switch {
+		case result == 'X' || result == 'O':
+			s.Fini()
+			fmt.Printf("Player %c won.\n", result)
+			return
+		case result == 1:
+			s.Fini()
+			fmt.Printf("It was a draw.\n")
+			return
+		}
+
+		view.Draw(g)
 		event := s.PollEvent()
 		switch e := event.(type) {
 		case *tcell.EventKey:
@@ -38,8 +54,8 @@ func main() {
 					return
 				}
 			case tcell.KeyEnter:
-				s.Fini()
-				return
+				_ = g.PlayTurn(view.SelectedRow, view.SelectedCol)
+				// need to handle error - goes to log
 			default:
 				view.MoveSelect(key)
 			}
@@ -48,38 +64,3 @@ func main() {
 
 	s.Fini()
 }
-
-
-//	for {
-//		printGame(g.Board)
-//		fmt.Printf("It is player %c's turn.\n", g.Turn)
-//		fmt.Printf("Pick a square: ")
-//
-//		input := make([]byte, 10)
-//		if _, err := os.Stdin.Read(input); err != nil {
-//			fmt.Fprintf(os.Stderr, "There was an error reading input: %s\n", err.Error())
-//			continue
-//		}
-//
-//		square := int(input[0]) - 48
-//		if err := g.PlayTurn(square); err != nil {
-//			fmt.Fprintf(os.Stderr, "error: %s\n", err.Error())
-//			continue
-//		}
-//
-//		result := g.CheckWin()
-//		switch result {
-//		case 'X':
-//			fmt.Printf("Player %c won. Good Game!\n", result)
-//			printGame(g.Board)
-//			os.Exit(0)
-//		case 'O':
-//			fmt.Printf("Player %c won. Good Game!\n", result)
-//			printGame(g.Board)
-//			os.Exit(0)
-//		case 1:
-//			fmt.Print("It is a draw. Good game!\n")
-//			printGame(g.Board)
-//			os.Exit(0)
-//		}
-//	}
