@@ -51,6 +51,11 @@ func (v *View) MoveSelect(key tcell.Key) error {
 
 func (v *View) Draw(game *game.Game) {
 
+	// get center of display
+	width, height := v.screen.Size()
+	center_x := width/2 - 8
+	center_y := height/2 - 10
+
 	// put X's and O's into board
 	board := v.getFreshBoard()
 	for i, row := range game.Board {
@@ -70,11 +75,26 @@ func (v *View) Draw(game *game.Game) {
 	// write data to the screen
 	for j, row := range board {
 		for i, cell := range row {
-			v.screen.SetContent(i, j, cell.Rune, nil, cell.Style)
+			v.screen.SetContent(i + center_x, j + center_y, cell.Rune, nil, cell.Style)
 		}
 	}
-	v.screen.Show()
 
+	// write messages
+	lines := [4]string{
+		fmt.Sprintf("It is player %c's turn", game.Turn),
+		"Use the arrow keys to select a square",
+		"Press enter to choose a square",
+		"Press q to exit",
+	}
+	for line_number, line := range lines {
+		i := 0
+		for _, character := range line {
+			v.screen.SetContent(i + center_x, line_number + center_y + 8, character, nil, tcell.StyleDefault)
+			i = i + 1
+		}
+	}
+
+	v.screen.Show()
 }
 
 
