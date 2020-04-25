@@ -9,39 +9,39 @@ import (
 
 
 type View struct {
-	SelectedRow, SelectedCol int
+	SelectedY, SelectedX int
 	screen tcell.Screen
 }
 
 func NewView(s tcell.Screen) *View {
 	return &View{
 		screen: s,
-		SelectedRow: 0,
-		SelectedCol: 0,
+		SelectedY: 0,
+		SelectedX: 0,
 	}
 }
 
 func (v *View) MoveSelect(key tcell.Key) error {
 	switch key {
 	case tcell.KeyUp:
-		v.SelectedRow = v.SelectedRow - 1
-		if v.SelectedRow < 0 {
-			v.SelectedRow = 2
+		v.SelectedY = v.SelectedY - 1
+		if v.SelectedY < 0 {
+			v.SelectedY = 2
 		}
 	case tcell.KeyRight:
-		v.SelectedCol = v.SelectedCol + 1
-		if v.SelectedCol > 2 {
-			v.SelectedCol = 0
+		v.SelectedX = v.SelectedX + 1
+		if v.SelectedX > 2 {
+			v.SelectedX = 0
 		}
 	case tcell.KeyDown:
-		v.SelectedRow = v.SelectedRow + 1
-		if v.SelectedRow > 2 {
-			v.SelectedRow = 0
+		v.SelectedY = v.SelectedY + 1
+		if v.SelectedY > 2 {
+			v.SelectedY = 0
 		}
 	case tcell.KeyLeft:
-		v.SelectedCol = v.SelectedCol - 1
-		if v.SelectedCol < 0 {
-			v.SelectedCol = 2
+		v.SelectedX = v.SelectedX - 1
+		if v.SelectedX < 0 {
+			v.SelectedX = 2
 		}
 	default:
 		return fmt.Errorf("%v is not a valid key", key)
@@ -60,7 +60,10 @@ func (v *View) Draw(game *game.Game) {
 	// write board
 	board_x := center_x - 8
 	board_y := center_y - 10
-	v.writeBoard(board_x, board_y, game)
+	selection := [][2]int{
+		[2]int{v.SelectedX, v.SelectedY},
+	}
+	v.writeBoard(board_x, board_y, game.Board, selection)
 
 	// write messages under board
 	messages_x := center_x - 21
@@ -102,26 +105,28 @@ func (v *View) writeCenteredLines(x, y, width int, lines []string) {
 	}
 }
 
-func (v * View) writeBoard(x, y int, game *game.Game) {
+func (v * View) writeBoard(x, y int, board [3][3]byte, highlightSquares [][2]int) {
 
 	// put X's and O's into board
-	board := v.getFreshBoard()
-	for i, row := range game.Board {
+	view_board := v.getFreshBoard()
+	for i, row := range board {
 		for j, val := range row {
 			if val != 0 {
-				board[ i*2 + 1 ][ j*4 + 2].Rune = rune(val)
+				view_board[ i*2 + 1 ][ j*4 + 2].Rune = rune(val)
 			}
 		}
 	}
 
 	// set the color for selected cell to white
 	select_style := tcell.StyleDefault.Background(tcell.ColorWhite)
-	board[ v.SelectedRow*2 + 1 ][ v.SelectedCol*4 + 1].Style = select_style
-	board[ v.SelectedRow*2 + 1 ][ v.SelectedCol*4 + 2].Style = select_style
-	board[ v.SelectedRow*2 + 1 ][ v.SelectedCol*4 + 3].Style = select_style
+	for _, square := range highlightSquares {
+		view_board[ square[1]*2 + 1 ][ square[0]*4 + 1 ].Style = select_style
+		view_board[ square[1]*2 + 1 ][ square[0]*4 + 2 ].Style = select_style
+		view_board[ square[1]*2 + 1 ][ square[0]*4 + 3 ].Style = select_style
+	}
 
 	// write data to the screen
-	for j, row := range board {
+	for j, row := range view_board {
 		for i, cell := range row {
 			v.screen.SetContent(i + x, j + y, cell.Rune, nil, cell.Style)
 		}
