@@ -50,32 +50,49 @@ func (v *View) MoveSelect(key tcell.Key) error {
 }
 
 
-func (v *View) Draw(game *game.Game) {
+func (v *View) Draw(g *game.Game) {
 
-	// get center of display
+	// get center of display, and top left corners of widgets
 	width, height := v.screen.Size()
 	center_x := width/2
 	center_y := height/2
-
-	// write board
 	board_x := center_x - 8
 	board_y := center_y - 10
-	selection := [][2]int{
-		[2]int{v.SelectedX, v.SelectedY},
-	}
-	v.writeBoard(board_x, board_y, game.Board, selection)
-
-	// write messages under board
 	messages_x := center_x - 21
 	messages_y := center_y - 2
-	lines := []string{
-		fmt.Sprintf("It is player %c's turn", game.Turn),
-		"Use the arrow keys to select a square",
-		"Press enter to choose a square",
-		"Press q to exit",
-	}
-	v.writeCenteredLines(messages_x, messages_y, 40, lines)
 
+	result, win_info := g.CheckWin()
+	selection := [][2]int{}
+	message_lines := []string{}
+	switch result {
+	case game.KeepPlaying:
+		selection = [][2]int{
+			[2]int{v.SelectedX, v.SelectedY},
+		}
+		message_lines = []string{
+			fmt.Sprintf("It is player %c's turn", g.Turn),
+			"Use the arrow keys to select a square",
+			"Press enter to choose a square",
+			"Press q to exit",
+		}
+	case game.Draw:
+		message_lines = []string{
+			"It's a draw!",
+			"Press q to exit",
+		}
+	case game.Win:
+		squares := win_info.Squares()
+		selection = squares[:]
+		message_lines = []string{
+			fmt.Sprintf("Player %c won!", win_info.Letter()),
+			"Press q to exit",
+		}
+	}
+
+	// write screen
+	v.screen.Clear()
+	v.writeBoard(board_x, board_y, g.Board, selection)
+	v.writeCenteredLines(messages_x, messages_y, 40, message_lines)
 	v.screen.Show()
 }
 

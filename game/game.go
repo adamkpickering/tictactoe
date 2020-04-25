@@ -103,13 +103,13 @@ func (g *Game) CheckWin() (int, WinInfo) {
 		for _, wc := range wc_array {
 			win := true
 			for _, coords := range wc {
-				if g.Board[coords[0]][coords[1]] != letter {
+				if g.Board[coords[1]][coords[0]] != letter {
 					win = false
 				}
 			}
 			if win {
 				return Win, MuhWin{
-					letter: g.Board[wc[0][0]][wc[0][1]],
+					letter: g.Board[wc[0][1]][wc[0][0]],
 					squares: wc,
 				}
 			}

@@ -29,19 +29,6 @@ func main() {
 	view := view.NewView(s)
 
 	for {
-		// check for win conditions
-		result, win_info := g.CheckWin()
-		switch result {
-		case game.Win:
-			s.Fini()
-			fmt.Printf("Player %c won.\n", win_info.Letter())
-			return
-		case game.Draw:
-			s.Fini()
-			fmt.Printf("It was a draw.\n")
-			return
-		}
-
 		view.Draw(g)
 		event := s.PollEvent()
 		switch e := event.(type) {
