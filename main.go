@@ -5,8 +5,8 @@ import (
 	"os"
 	"github.com/gdamore/tcell"
 
-	"github.com/adamkpickering/tictactoe/pkg/game"
-	"github.com/adamkpickering/tictactoe/pkg/view"
+	"github.com/adamkpickering/tictactoe/game"
+	"github.com/adamkpickering/tictactoe/view"
 )
 
 func main() {

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 	"github.com/gdamore/tcell"
-	"github.com/adamkpickering/tictactoe/pkg/game"
+	"github.com/adamkpickering/tictactoe/game"
 )
 
 
