@@ -2,6 +2,7 @@ package view
 
 import (
 	"fmt"
+	"strings"
 	"github.com/gdamore/tcell"
 	"github.com/adamkpickering/tictactoe/pkg/game"
 )
@@ -80,21 +81,44 @@ func (v *View) Draw(game *game.Game) {
 	}
 
 	// write messages
-	lines := [4]string{
+	lines := []string{
 		fmt.Sprintf("It is player %c's turn", game.Turn),
 		"Use the arrow keys to select a square",
 		"Press enter to choose a square",
 		"Press q to exit",
 	}
-	for line_number, line := range lines {
+	v.writeCenteredLines(center_x, center_y, 30, lines)
+
+	v.screen.Show()
+}
+
+
+func (v *View) writeBoard(x, y int, g *game.Game)
+
+
+func (v *View) writeCenteredLines(x, y, width int, lines []string) {
+
+	for j, line := range lines {
+		line_length := len([]rune(line))
+		difference := width - line_length
+		var new_line string
+		if difference < 0 {
+			new_line = line[0:width]
+		} else {
+			padding := difference/2
+			b := strings.Builder{}
+			for i := 0; i < padding; i++ {
+				b.WriteByte(' ')
+			}
+			b.WriteString(line)
+			new_line = b.String()
+		}
 		i := 0
-		for _, character := range line {
-			v.screen.SetContent(i + center_x, line_number + center_y + 8, character, nil, tcell.StyleDefault)
+		for _, character := range new_line {
+			v.screen.SetContent(x + i, y + j, character, nil, tcell.StyleDefault)
 			i = i + 1
 		}
 	}
-
-	v.screen.Show()
 }
 
 
