@@ -30,13 +30,13 @@ func main() {
 
 	for {
 		// check for win conditions
-		result := g.CheckWin()
-		switch {
-		case result == 'X' || result == 'O':
+		result, win_info := g.CheckWin()
+		switch result {
+		case game.Win:
 			s.Fini()
-			fmt.Printf("Player %c won.\n", result)
+			fmt.Printf("Player %c won.\n", win_info.Letter())
 			return
-		case result == 1:
+		case game.Draw:
 			s.Fini()
 			fmt.Printf("It was a draw.\n")
 			return

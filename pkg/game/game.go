@@ -4,6 +4,12 @@ import (
 	"fmt"
 )
 
+const (
+	KeepPlaying int = iota
+	Draw
+	Win
+)
+
 type Game struct {
 	Board [3][3]byte
 	Turn  byte
@@ -45,7 +51,10 @@ func (g *Game) PlayTurn(row, col int) error {
 	return nil
 }
 
-func (g *Game) CheckWin() byte {
+// Returns either KeepPlaying, Draw, or Win in first argument.
+// If the first argument is equal to Win, a WinInfo structure is
+// returned in the second argument; otherwise, the second argument is nil.
+func (g *Game) CheckWin() (int, WinInfo) {
 
 	// test for win condition
 	wc_array := [8][3][2]int{
@@ -90,17 +99,19 @@ func (g *Game) CheckWin() byte {
 			[2]int{2, 0},
 		},
 	}
-	win := true
 	for _, letter := range [2]byte{'X', 'O'} {
 		for _, wc := range wc_array {
-			win = true
+			win := true
 			for _, coords := range wc {
 				if g.Board[coords[0]][coords[1]] != letter {
 					win = false
 				}
 			}
 			if win {
-				return g.Board[wc[0][0]][wc[0][1]]
+				return Win, MuhWin{
+					letter: g.Board[wc[0][0]][wc[0][1]],
+					squares: wc,
+				}
 			}
 		}
 	}
@@ -116,8 +127,9 @@ func (g *Game) CheckWin() byte {
 		}
 	}
 	if draw {
-		return 1
+		return Draw, nil
 	}
 
-	return 0
+	// neither win nor draw
+	return KeepPlaying, nil
 }

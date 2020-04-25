@@ -78,8 +78,8 @@ func TestCheckWin(t *testing.T) {
 				board[wc[1][0]][wc[1][1]] = letter
 				board[wc[2][0]][wc[2][1]] = letter
 				g := NewGame(board)
-				result := g.CheckWin()
-				if result != letter {
+				result, _ := g.CheckWin()
+				if result != Win {
 					t.Fail()
 				}
 			}
@@ -94,8 +94,8 @@ func TestCheckWin(t *testing.T) {
 			[3]byte{0, 0, 0},
 		}
 		g := NewGame(board)
-		result := g.CheckWin()
-		if result != 0 {
+		result, _ := g.CheckWin()
+		if result != KeepPlaying {
 			t.Fail()
 		}
 	}
@@ -106,8 +106,8 @@ func TestCheckWin(t *testing.T) {
 			[3]byte{'O', 0, 0},
 		}
 		g := NewGame(board)
-		result := g.CheckWin()
-		if result != 0 {
+		result, _ := g.CheckWin()
+		if result != KeepPlaying {
 			t.Fail()
 		}
 	}
@@ -120,8 +120,8 @@ func TestCheckWin(t *testing.T) {
 			[3]byte{'X', 'O', 'X'},
 		}
 		g := NewGame(board)
-		result := g.CheckWin()
-		if result != 1 {
+		result, _ := g.CheckWin()
+		if result != Draw {
 			t.Fail()
 		}
 	}
