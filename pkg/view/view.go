@@ -54,46 +54,27 @@ func (v *View) Draw(game *game.Game) {
 
 	// get center of display
 	width, height := v.screen.Size()
-	center_x := width/2 - 8
-	center_y := height/2 - 10
+	center_x := width/2
+	center_y := height/2
 
-	// put X's and O's into board
-	board := v.getFreshBoard()
-	for i, row := range game.Board {
-		for j, val := range row {
-			if val != 0 {
-				board[ i*2 + 1 ][ j*4 + 2].Rune = rune(val)
-			}
-		}
-	}
+	// write board
+	board_x := center_x - 8
+	board_y := center_y - 10
+	v.writeBoard(board_x, board_y, game)
 
-	// color the selected cell white
-	select_style := tcell.StyleDefault.Background(tcell.ColorWhite)
-	board[ v.SelectedRow*2 + 1 ][ v.SelectedCol*4 + 1].Style = select_style
-	board[ v.SelectedRow*2 + 1 ][ v.SelectedCol*4 + 2].Style = select_style
-	board[ v.SelectedRow*2 + 1 ][ v.SelectedCol*4 + 3].Style = select_style
-
-	// write data to the screen
-	for j, row := range board {
-		for i, cell := range row {
-			v.screen.SetContent(i + center_x, j + center_y, cell.Rune, nil, cell.Style)
-		}
-	}
-
-	// write messages
+	// write messages under board
+	messages_x := center_x - 21
+	messages_y := center_y - 2
 	lines := []string{
 		fmt.Sprintf("It is player %c's turn", game.Turn),
 		"Use the arrow keys to select a square",
 		"Press enter to choose a square",
 		"Press q to exit",
 	}
-	v.writeCenteredLines(center_x, center_y, 30, lines)
+	v.writeCenteredLines(messages_x, messages_y, 40, lines)
 
 	v.screen.Show()
 }
-
-
-func (v *View) writeBoard(x, y int, g *game.Game)
 
 
 func (v *View) writeCenteredLines(x, y, width int, lines []string) {
@@ -117,6 +98,32 @@ func (v *View) writeCenteredLines(x, y, width int, lines []string) {
 		for _, character := range new_line {
 			v.screen.SetContent(x + i, y + j, character, nil, tcell.StyleDefault)
 			i = i + 1
+		}
+	}
+}
+
+func (v * View) writeBoard(x, y int, game *game.Game) {
+
+	// put X's and O's into board
+	board := v.getFreshBoard()
+	for i, row := range game.Board {
+		for j, val := range row {
+			if val != 0 {
+				board[ i*2 + 1 ][ j*4 + 2].Rune = rune(val)
+			}
+		}
+	}
+
+	// set the color for selected cell to white
+	select_style := tcell.StyleDefault.Background(tcell.ColorWhite)
+	board[ v.SelectedRow*2 + 1 ][ v.SelectedCol*4 + 1].Style = select_style
+	board[ v.SelectedRow*2 + 1 ][ v.SelectedCol*4 + 2].Style = select_style
+	board[ v.SelectedRow*2 + 1 ][ v.SelectedCol*4 + 3].Style = select_style
+
+	// write data to the screen
+	for j, row := range board {
+		for i, cell := range row {
+			v.screen.SetContent(i + x, j + y, cell.Rune, nil, cell.Style)
 		}
 	}
 }
