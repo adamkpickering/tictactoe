@@ -30,17 +30,17 @@ func NewGame(i interface{}) *Game {
 	}
 }
 
-func (g *Game) PlayTurn(row, col int) error {
+func (g *Game) PlayTurn(x, y int) error {
 
-	if row < 0 || row > 2 || col < 0 || col > 2 {
-		return fmt.Errorf("row %d col %d is not valid; must be in range 0-2", row, col)
+	if x < 0 || x > 2 || y < 0 || y > 2 {
+		return fmt.Errorf("x %d y %d is not valid; must be in range 0-2", x, y)
 	}
 
-	if g.Board[row][col] != 0 {
-		return fmt.Errorf("square %d,%d is already occupied", row, col)
+	if g.Board[y][x] != 0 {
+		return fmt.Errorf("square %d,%d is already occupied", x, y)
 	}
 
-	g.Board[row][col] = g.Turn
+	g.Board[y][x] = g.Turn
 
 	if g.Turn == 'X' {
 		g.Turn = 'O'

@@ -54,7 +54,7 @@ func main() {
 					return
 				}
 			case tcell.KeyEnter:
-				_ = g.PlayTurn(view.SelectedY, view.SelectedX)
+				_ = g.PlayTurn(view.SelectedX, view.SelectedY)
 				// need to handle error - goes to log
 			default:
 				view.MoveSelect(key)
