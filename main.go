@@ -1,9 +1,10 @@
+// The main loop.
 package main
 
 import (
 	"fmt"
-	"os"
 	"github.com/gdamore/tcell"
+	"os"
 
 	"github.com/adamkpickering/tictactoe/game"
 	"github.com/adamkpickering/tictactoe/view"

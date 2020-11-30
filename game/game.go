@@ -1,3 +1,5 @@
+// Contains the Game object, which holds the logic of the game
+// and provides an interface to changing the state of the game.
 package game
 
 import (
@@ -10,11 +12,15 @@ const (
 	Win
 )
 
+// Contains the state of the game.
 type Game struct {
 	Board [3][3]byte
 	Turn  byte
 }
 
+// Creates a new game. i may either be a [3][3]byte, which represents an existing
+// game (this is useful for testing), or nil, in which case a Game with a zeroed
+// board is returned.
 func NewGame(i interface{}) *Game {
 	switch v := i.(type) {
 	case [3][3]byte:
@@ -30,6 +36,8 @@ func NewGame(i interface{}) *Game {
 	}
 }
 
+// Changes the state of the game by saying which square the current player has
+// chosen to place an X or an O.
 func (g *Game) PlayTurn(x, y int) error {
 
 	if x < 0 || x > 2 || y < 0 || y > 2 {

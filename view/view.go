@@ -1,3 +1,5 @@
+// Package view contains all of the code that is concerned with communicating
+// game information to the players, other than that which is in the main loop.
 package view
 
 import (
@@ -7,12 +9,13 @@ import (
 	"github.com/adamkpickering/tictactoe/game"
 )
 
-
+// Represents the UI of the game; contains all UI state.
 type View struct {
 	SelectedY, SelectedX int
 	screen tcell.Screen
 }
 
+// Used to create new View structs.
 func NewView(s tcell.Screen) *View {
 	return &View{
 		screen: s,
@@ -21,6 +24,7 @@ func NewView(s tcell.Screen) *View {
 	}
 }
 
+// Implements the logic of what happens when the user presses a key.
 func (v *View) MoveSelect(key tcell.Key) error {
 	switch key {
 	case tcell.KeyUp:
@@ -49,7 +53,8 @@ func (v *View) MoveSelect(key tcell.Key) error {
 	return nil
 }
 
-
+// Given a game.Game structure, turns the state of the game described
+// in that structure into its UI representation.
 func (v *View) Draw(g *game.Game) {
 
 	// get center of display, and top left corners of widgets
@@ -96,9 +101,12 @@ func (v *View) Draw(g *game.Game) {
 	v.screen.Show()
 }
 
-
+// Writes each string in lines to a box that is width characters wide,
+// centering each line within the box. The box starts at coordinates
+// given by x and y, where x is the number of characters from the left
+// side of the screen and y is the number of characters from the top
+// of the screen.
 func (v *View) writeCenteredLines(x, y, width int, lines []string) {
-
 	for j, line := range lines {
 		line_length := len([]rune(line))
 		difference := width - line_length
@@ -122,6 +130,11 @@ func (v *View) writeCenteredLines(x, y, width int, lines []string) {
 	}
 }
 
+// Given a [3][3]byte that represents a board, writes the game board with the top
+// left corner at the square given by x and y, where x is the number of characters
+// from the left side of the screen and y is the number of characters from the
+// top of the screen. Also takes highlightSquares, which is a slice of coordinates
+// of squares to highlight.
 func (v * View) writeBoard(x, y int, board [3][3]byte, highlightSquares [][2]int) {
 
 	// put X's and O's into board
@@ -150,7 +163,11 @@ func (v * View) writeBoard(x, y int, board [3][3]byte, highlightSquares [][2]int
 	}
 }
 
-
+// Returns a structure that represents an empty tic tac toe board. This is
+// useful because it eliminates the boilerplate of writing the characters
+// that are identical in each rewrite of the board - the calling function
+// can instead worry about the characters that represent the state of the
+// game.
 func (v *View) getFreshBoard() [7][13]struct{Rune rune; Style tcell.Style} {
 
 	var board [7][13]struct{
